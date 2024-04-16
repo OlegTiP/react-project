@@ -13,13 +13,14 @@ function App() {
 
   const [items, setItems] = React.useState([]);
 
-  fetch('https://661d6b6498427bbbef01c82c.mockapi.io/items').then((res) => {
-    return res.json();
-  })
-  .then((arr) => {
-    console.log(arr);
-    setItems(arr);
-  })
+  React.useEffect(() => {
+    
+    fetch('https://661d6b6498427bbbef01c82c.mockapi.io/items').then((res) => res.json())
+    .then((arr) => {
+      setItems(arr);
+    })
+  }, [])
+
 
   return (
     <div className="wrapper">
