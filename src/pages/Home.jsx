@@ -5,7 +5,7 @@ import Sort from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 
-const Home = () => {
+const Home = ( {searchValue} ) => {
 
    
   const [items, setItems] = React.useState([]);
@@ -37,6 +37,15 @@ const Home = () => {
     window.scrollTo(0, 0)
   }, [categoryID, sortType])
 
+  const pizzas = items.filter(obj => {
+    if (obj.title.toLowerCase().includes(searchValue.toLowerCase())) {
+      return true;
+    }
+
+    return false;
+  }).map((obj) => <PizzaBlock key={obj.id} {...obj} />);
+  const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
+
    return (
       <div className="container">
       <div className="content__top">
@@ -47,8 +56,8 @@ const Home = () => {
           <div className="content__items">
             {
               isLoading 
-              ? [...new Array(6)].map((_, index) => <Skeleton key={index} />) 
-              : items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)
+              ? skeletons 
+              : pizzas
             }
             {/* {
               items.map(obj => <Skeleton key={obj.id} {...obj} /> )
