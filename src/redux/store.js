@@ -3,5 +3,7 @@ import filter from './slices/filterSlice';
 
 
 export const store = configureStore({
-  filter,
+  reducer: {
+    filter,
+  }
 });

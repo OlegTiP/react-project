@@ -1,7 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
-
+import { setCategoryId } from '../redux/slices/filterSlice';
 import Pagination from '../components/Pagination';
 import Categories from '../components/Categories';
 import Sort from '../components/Sort';
@@ -10,29 +10,32 @@ import Skeleton from '../components/PizzaBlock/Skeleton';
 import { SearchContext } from '../App';
 
 const Home = () => {
-  const categoryId = useSelector(state => state.filter.categoryID)
-
-
+  const dispatch = useDispatch();
+  const { categoryId, sort } = useSelector(state => state.filter);
+  // const sortType = useSelector(state => state.filter.sort.sortProperty);
 
   const { searchValue } = React.useContext(SearchContext);
    
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   
-  // const [categoryID, setCategoryID] = React.useState(0);
   const [currentPage, setCurrentPage] = React.useState(1);
-  const [sortType, setSortType] = React.useState({
-    name: 'популярности',
-    sortProperty: 'rating',
-  });
+  // const [sortType, setSortType] = React.useState({
+  //   name: 'популярности',
+  //   sortProperty: 'rating',
+  // });
+
+  const onChangeCategory = (id) => {
+    dispatch(setCategoryId(id));
+  }
 
   // запрос данных с сервера
   React.useEffect(() => {
     setIsLoading(true);
 
-    const order = sortType.sortProperty.includes('-') ? 'asc' : 'desc';
-    const sortBy = sortType.sortProperty.replace('-', '');
-    const category = categoryID > 0 ? `category=${categoryID}` : '';
+    const order = sort.sortProperty.includes('-') ? 'asc' : 'desc';
+    const sortBy = sort.sortProperty.replace('-', '');
+    const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
     
     fetch(
@@ -45,7 +48,7 @@ const Home = () => {
       setIsLoading(false);
     })
     window.scrollTo(0, 0)
-  }, [categoryID, sortType, searchValue, currentPage])
+  }, [categoryId, sort.sortProperty, searchValue, currentPage])
 
   const pizzas = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />);
   const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
@@ -53,8 +56,8 @@ const Home = () => {
    return (
       <div className="container">
       <div className="content__top">
-            <Categories value={categoryID} onChangeCategory={(i) => setCategoryID(i)} />
-            <Sort value={sortType} onChangeSort={(i) => setSortType(i)} />
+            <Categories value={categoryId} onChangeCategory={onChangeCategory} />
+            <Sort />
           </div>
           <h2 className="content__title">Все пиццы</h2>
           <div className="content__items">
