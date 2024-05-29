@@ -1,7 +1,8 @@
 import React from 'react';
+import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { setCategoryId } from '../redux/slices/filterSlice';
+import { setCategoryId, setCurrentPage } from '../redux/slices/filterSlice';
 import Pagination from '../components/Pagination';
 import Categories from '../components/Categories';
 import Sort from '../components/Sort';
@@ -11,23 +12,21 @@ import { SearchContext } from '../App';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { categoryId, sort } = useSelector(state => state.filter);
-  // const sortType = useSelector(state => state.filter.sort.sortProperty);
+  const { categoryId, sort, currentPage } = useSelector(state => state.filter);
 
   const { searchValue } = React.useContext(SearchContext);
    
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  
-  const [currentPage, setCurrentPage] = React.useState(1);
-  // const [sortType, setSortType] = React.useState({
-  //   name: 'популярности',
-  //   sortProperty: 'rating',
-  // });
+
 
   const onChangeCategory = (id) => {
     dispatch(setCategoryId(id));
-  }
+  };
+
+  const onChangePage = number => {
+    dispatch(setCurrentPage(number));
+  };
 
   // запрос данных с сервера
   React.useEffect(() => {
@@ -37,16 +36,18 @@ const Home = () => {
     const sortBy = sort.sortProperty.replace('-', '');
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
-    
-    fetch(
-      `https://661d6b6498427bbbef01c82c.mockapi.io/items?limit=4&page=${currentPage}&${category}&sortBy=${sortBy}&order=${order}${search}`,
-    )
 
-    .then((res) => res.json())
-    .then((arr) => {
-      setItems(arr);
+    // запрос данных с сервера c помощью axiox
+    axios
+    .get(
+      `https://661d6b6498427bbbef01c82c.mockapi.io/items?limit=4&page=${currentPage}&${category}&sortBy=${sortBy}&order=${order}${search}`
+      )
+    .then(res => {
+      setItems(res.data);
+      console.log(res);
       setIsLoading(false);
     })
+
     window.scrollTo(0, 0)
   }, [categoryId, sort.sortProperty, searchValue, currentPage])
 
@@ -67,7 +68,7 @@ const Home = () => {
               : pizzas
             }
           </div>
-          <Pagination onChangePage={(number) => setCurrentPage(number)} />
+          <Pagination currentPage={currentPage} onChangePage={onChangePage} />
       </div>
    )
 }
