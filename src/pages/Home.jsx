@@ -8,13 +8,12 @@ import Sort from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 import { SearchContext } from '../App';
-import { fetchPizzas } from '../redux/slices/pizzaSlice';
+import { fetchPizzas, selectFilter, selectPizzaData } from '../redux/slices/pizzaSlice';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { categoryId, sort, currentPage } = useSelector(state => state.filter);
-  const { items, status } = useSelector(state => state.pizza);
-  const { searchValue } = React.useContext(SearchContext);
+  const { categoryId, sort, currentPage, searchValue } = useSelector(selectFilter);
+  const { items, status } = useSelector(selectPizzaData);
    
 
   const onChangeCategory = (id) => {
