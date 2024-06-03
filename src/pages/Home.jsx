@@ -8,7 +8,6 @@ import Categories from '../components/Categories';
 import Sort from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
 import Skeleton from '../components/PizzaBlock/Skeleton';
-import { SearchContext } from '../App';
 import { fetchPizzas, selectFilter, selectPizzaData } from '../redux/slices/pizzaSlice';
 
 const Home = () => {

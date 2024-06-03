@@ -4,7 +4,6 @@ import {setSearchValue} from '../../redux/slices/filterSlice';
 import debounce from 'lodash.debounce';
 
 import styles from './Search.module.scss';
-import { SearchContext } from '../../App';
 
 const Search = () => {
    const dispatch = useDispatch();
