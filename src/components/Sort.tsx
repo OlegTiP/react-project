@@ -30,8 +30,8 @@ function Sort() {
 
   React.useEffect(() => {
 
-    const handleClickOutside = (event: any) => {
-      if (sortRef.current && !sortRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sortRef.current && !event.composedPath().includes(sortRef.current)) {
         setOpen(false);
       }
     };
